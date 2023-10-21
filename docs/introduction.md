@@ -58,6 +58,7 @@ $$
 Для побудови функцій $y_{\infty}(s)$, $y_{0}(s)$, $y_{\Gamma}(s)$ у дискретному
 випадку візьмемо рівності (2.16 - 2.18):
 
+``` math
 \begin{equation}
 \begin{aligned}
 y_{\infty} (s) &= \sum_{m = 1}^{M} G(s - s_m)u_m \\\\
@@ -65,10 +66,12 @@ y_{0} (s) &= \sum_{m = 1}^{M_0} G(s - s_m^0)u_{0m} \\\\
 y_{\Gamma} (s) &= \sum_{m = 1}^{M_{\Gamma}} G(s - s_m^{\Gamma} )u_{\Gamma m}
 \end{aligned}
 \end{equation}
+```
 
 де $G$ - функція гріна, що буде задана як вхід задачі, а вектори $u$ задаються
 таким чином (2.13-2.15):
 
+``` math
 \begin{equation}
 \begin{aligned}
 u &= col(u(s_m), m = \overline{1, M}) \ (s_m \in S_0^T) \\\\
@@ -76,6 +79,7 @@ u_0 &= col(u_0(s_m^0), m = \overline{1, M_0}) \ (s_m^0 \in S^0) \\\\
 u_{\Gamma} &= col(u_{\Gamma}(s_m^{\Gamma}), m = \overline{1, M_{\Gamma}}) \ (s_m^{\Gamma} \in S^{\Gamma}) 
 \end{aligned}
 \end{equation}
+```
 
 тобто $u$-вектори це вектори всіх значеннь функцій $u$, $u_0$ та $u_{\Gamma}$ у
 точках з множин $S_0^T$, $S^0$, $S^{\Gamma}$ відповідно, а, наприклад, $u_{0
