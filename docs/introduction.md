@@ -116,6 +116,7 @@ A_{12} = col((str(L_{r}^0(\partial_t) G(s - s_m^{\Gamma})\bigg\vert_{\begin{alig
 A_{21} = col((str(L_{r}^{\Gamma}(\partial_x) G(s - s_m^0)\bigg\vert_{s = s_l^{\Gamma}}, m = \overline{1, M_0}), l = \overline{1,L_{\Gamma}}), r = \overline{1,R_{\Gamma}}), \\\\
 A_{22} = col((str(L_{r}^{\Gamma}(\partial_x) G(s - s_m^{\Gamma})\bigg\vert_{s = s_l^{\Gamma}}, m = \overline{1, M_{\Gamma}}), l = \overline{1,L_{\Gamma}}), r = \overline{1,R_{\Gamma}}),
 \end{aligned}
+\end{equation}
 ```
 
 
