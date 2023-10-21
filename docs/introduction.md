@@ -94,6 +94,7 @@ $$
 
 де:
 
+``` math
 \begin{equation}
 \begin{aligned}
 \overline{u} = \begin{pmatrix}
@@ -115,7 +116,8 @@ A_{12} = col((str(L_{r}^0(\partial_t) G(s - s_m^{\Gamma})\bigg\vert_{\begin{alig
 A_{21} = col((str(L_{r}^{\Gamma}(\partial_x) G(s - s_m^0)\bigg\vert_{s = s_l^{\Gamma}}, m = \overline{1, M_0}), l = \overline{1,L_{\Gamma}}), r = \overline{1,R_{\Gamma}}), \\\\
 A_{22} = col((str(L_{r}^{\Gamma}(\partial_x) G(s - s_m^{\Gamma})\bigg\vert_{s = s_l^{\Gamma}}, m = \overline{1, M_{\Gamma}}), l = \overline{1,L_{\Gamma}}), r = \overline{1,R_{\Gamma}}),
 \end{aligned}
-\end{equation}
+```
+
 
 Тобто $\overline{Y}$ - це конкатенація векторів $Y_0$, $Y_{\Gamma}$ по
 вертикалі, та $A$ - конкатенація матриць $A_{11}$, $A_{12}$, $A_{21}$, $A_{22}$.
@@ -123,9 +125,9 @@ A_{22} = col((str(L_{r}^{\Gamma}(\partial_x) G(s - s_m^{\Gamma})\bigg\vert_{s = 
 
 Згідно з (2.22):
 
-\begin{equation}
+$$
 \overline{u} = A^{+} (\overline{Y} - A \nu) + \nu
-\end{equation}
+$$
 
 де $\nu$ - довільний вектор розмірності $M_0 + M_{\Gamma}$, a $A^{+}$ - матриця,
 псевдообернена до $A$.
