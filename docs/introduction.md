@@ -130,6 +130,15 @@ $$
 де $\nu$ - довільний вектор розмірності $M_0 + M_{\Gamma}$, a $A^{+}$ - матриця,
 псевдообернена до $A$.
 
+$$
+\begin{equation}
+\begin{aligned}
+Y^0_{r}(x) &= L^0_r (\partial_t)y(s)\bigg\vert_{t = 0} (r = \overline{1, R_0}, x \in S_0) \\
+Y^{\Gamma}_{\rho}(s) &= L^0_{\rho} (\partial_x)y(s)\bigg\vert_{s \in \Gamma \times [0, T]} (l = \overline{1, L_{\Gamma}}, \rho = \overline{1, R_{\Gamma}})
+\end{aligned}
+\end{equation}
+$$
+
 ## Досі не вирішені питання
 
 - [x] Які саме множини $S$ задаються руками а які ні, та що вони означають?
