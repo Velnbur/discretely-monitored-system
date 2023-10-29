@@ -19,9 +19,9 @@ def main():
     T = 20 #кінцевий час
     A, B = 0, 20
 
-    
+
     L0 = 3 # кількість початкових спостережень
-    x0 = np.linspace(A, B, num=L0)  # рівномірно розподілені точки 
+    x0 = np.linspace(A, B, num=L0)  # рівномірно розподілені точки
     t0 = [0 for i in range(len(xi_0))] #масив нулів
 
     Lg = 3 # кількість краєвих спостережень
@@ -29,7 +29,7 @@ def main():
     tg = np.linspace(0, T, num=Lg)
 
 
-    # 
+    #
 
     M0 = 4
     xm0 = np.random.randint(A, B, size=M0)
