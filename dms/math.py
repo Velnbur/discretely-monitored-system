@@ -1,6 +1,6 @@
 import numpy as np
 
-class Mathmodelodel():
+class MathModel:
     def __init__(self, g, y, u):
         self.g = g
         self.y = y
@@ -22,14 +22,11 @@ def main():
 
     L0 = 3 # кількість початкових спостережень
     x0 = np.linspace(A, B, num=L0)  # рівномірно розподілені точки
-    t0 = [0 for i in range(len(xi_0))] #масив нулів
+    t0 = [0 for i in range(len(x0))] #масив нулів
 
     Lg = 3 # кількість краєвих спостережень
     xg = np.linspace(A, B, num=Lg)
     tg = np.linspace(0, T, num=Lg)
-
-
-    #
 
     M0 = 4
     xm0 = np.random.randint(A, B, size=M0)
@@ -39,8 +36,8 @@ def main():
     xmg = np.random.randint(A, B, size=Mg)
     tmg = np.random.randint(0, T, size=Mg)
 
-    model = Mathmodel(g, y, u)
-    res = model.result
+    # model = MathModel(g, y, u)
+    # res = model.result
 
 
 if __name__ == '__main__':
