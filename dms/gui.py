@@ -2,6 +2,37 @@ from tkinter import *
 from tkinter import Button
 from tkinter import ttk
 
+selected_values = []
+
+def initial_points():
+    a = initial_amount.get()
+    label_x = Label(frame3, text = 'x: ', font=("Arial", 13))
+    label_x.grid(row = 3, column = 3)
+    
+    for i in range(int(a)):
+        x_choices = ['1','2']
+        var = StringVar()
+        x_entry = ttk.Combobox(frame3, textvariable = var, values = x_choices, font=("Arial", 14), height=5)
+        x_entry.grid(row = 3+i, column=10, padx = 10, pady = 10)
+    
+        var.trace_add("write", lambda *args, index=i, var=var: save_value(index, var.get()))
+
+def save_value(index, value):
+    selected_values.insert(index, value)
+    print(selected_values)
+    
+def boundary_points():
+    a = boundary_amount.get()
+    label_x = Label(frame3, text = 'x: ', font=("Arial", 13))
+    label_x.grid(row = 11, column = 3)
+    for i in range(int(a)):
+        b_choices = ['1','2']
+        varb = StringVar()
+        b_entry = ttk.Combobox(frame3, textvariable = varb, values = b_choices, font=("Arial", 14), height=5)
+        b_entry.grid(row = 11+i, column=10, padx = 10, pady = 10)
+    
+        varb.trace_add("write", lambda *args, index=i, var = varb : save_value(index, var.get()))
+    
 window = Tk()
 
 window.geometry("700x700")
@@ -75,17 +106,36 @@ button2 = Button(frame2, text = 'Зберегти та перейти далі',
 button2.grid(row = 4, columnspan = 20, padx = 10, pady = 10)
 
 #''' Точки спостережень  '''
-label_init = Label(frame3, text = 'Початкові умови', font=("Arial", 14))
+label_init = Label(frame3, text = 'Початкові умови', font=("Agbalumo", 14))
 label_init.grid(row = 0, column=0)
 
-label_iamount = Label(frame3, text = 'Кількість:', font=("Arial", 14))
+label_iamount = Label(frame3, text = 'Кількість:', font=("Arial", 13))
 label_iamount.grid(row = 1, column= 0)
 
-amount_choices = ['1', '2', '3', '4', '5']
-amount_entry = ttk.Combobox(frame3, values = amount_choices, font=("Arial", 14), height=5)
+initial_amount = StringVar()
+amount_entry = Spinbox(frame3, from_ = 0, to = 5, textvariable = initial_amount, font=("Arial", 14))
 amount_entry.grid(row = 1, column=10, padx = 10, pady = 10)
 
+button_init = Button(frame3, text = 'Ok', command = initial_points)
+button_init.grid(row = 1, column = 14)
 
+#Краєві умови
+
+label_boundary = Label(frame3, text = 'Краєві умови', font=("Agbalumo", 14))
+label_boundary.grid(row = 9, column=0)
+
+label_bamount = Label(frame3, text = 'Кількість:', font=("Arial", 13))
+label_bamount.grid(row = 10, column= 0)
+
+boundary_amount = StringVar()
+amount_entry = Spinbox(frame3, from_ = 0, to = 5, textvariable = boundary_amount, font=("Arial", 14))
+amount_entry.grid(row = 10, column=10, padx = 10, pady = 10)
+
+button_bound = Button(frame3, text = 'Ok', command = boundary_points)
+button_bound.grid(row = 10, column = 14)
+
+save_button = Button(frame3, text = 'Зберегти та перейти далі', command = save_value)
+save_button.grid(row = 17, columnspan = 12, padx = 10, pady = 10)
 #''' Моделюючі функції '''
 
 frame1.pack(fill='both', expand=True)
@@ -99,3 +149,6 @@ notebook.add(frame3, text='Точки спостережень')
 notebook.add(frame4, text='Моделюючі функції')
 
 window.mainloop()
+
+
+# Kyrylo was here
