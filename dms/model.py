@@ -1,5 +1,6 @@
+from ast import Tuple
 from dataclasses import dataclass, field
-from typing import Callable, List, Union
+from typing import Callable, List, Union, Optional
 
 import numpy as np
 import numpy.typing as npt
@@ -12,8 +13,8 @@ class ModelConfig:
     T: float = 5  # end of the monitored time interval [0,T]
     A: float = 0  # left boundary of the monitored space interval [A,B]
     B: float = 20  # right boundary of the monitored space interval [A,B]
-    C: float = 0  # left boundary of the monitored space interval [C,D]
-    D: float = 20  # right boundary of the monitored space interval [C,D]
+    # C: float = 0  # left boundary of the monitored space interval [C,D]
+    # D: float = 20  # right boundary of the monitored space interval [C,D]
 
     L0: int = 5  # number of points on the initial space and time intervals
     Lg: int = 3  # number of points on the boundary space and time intervals
@@ -71,14 +72,16 @@ class MonitoredModel:
     y_xt: Callable[[float, float], float]
     u_xt: Callable[[float, float], float]
 
+    __u: Optional[tuple[npt.ArrayLike, npt.ArrayLike]] = None
+
     def __init__(self, config: ModelConfig) -> None:
         self.xi_0 = np.linspace(config.A, config.B, num=config.L0)  # t=0
         self.ti_0 = np.zeros(config.L0)
-        self.x2i_0 = np.linspace(config.C, config.D, num=config.L0)
+        # self.x2i_0 = np.linspace(config.C, config.D, num=config.L0)
 
         self.xi_g = np.linspace(config.A, config.B, num=config.Lg)
         self.ti_g = np.linspace(0, config.T, num=config.Lg)
-        self.x2i_g = np.linspace(config.C, config.D, num=config.Lg)
+        # self.x2i_g = np.linspace(config.C, config.D, num=config.Lg)
 
         self.config = config
 
@@ -93,7 +96,38 @@ class MonitoredModel:
         self.y_xt = s.lambdify([x, t], y)
         self.u_xt = s.lambdify([x, t], u)
 
-    def solve(self) -> npt.ArrayLike:
+    def y_0(self, x: float, t: float) -> float:
+        u_0 = self._u_0()
+
+        return sum(
+            [
+                self.G(x, t, self.xi_0[i], self.ti_0[i]) * u_0[i]
+                for i in range(self.config.M0)
+            ]
+        )
+
+    def y_g(self, x: float, t: float) -> float:
+        u_G = self._u_g()
+
+        return sum(
+            [
+                self.G(x, t, self.xi_g[i], self.ti_g[i]) * u_G[i]
+                for i in range(self.config.Mg)
+            ]
+        )
+
+    def _u_0(self) -> npt.ArrayLike:
+        return self._u()[0]
+
+    def _u_g(self) -> npt.ArrayLike:
+        return self._u()[1]
+
+    def _u(self) -> tuple[npt.ArrayLike, npt.ArrayLike]:
+        """Find u vector and return u_0, u_G subvectors of it"""
+
+        if self.__u is not None:
+            return self.__u
+
         nu = np.ones((self.config.M0 + self.config.Mg, 1))
 
         A_matrix = self._A_matrix()
@@ -105,7 +139,12 @@ class MonitoredModel:
 
         assert np.allclose(A_matrix @ u, Y_vec)
 
-        return u
+        u_0 = u[: self.config.M0]
+        u_G = u[self.config.M0 :]
+
+        self.__u = (u_0, u_G)
+
+        return u_0, u_G
 
     def _get_initial_conditions(self):
         Yi_0 = [self.y_xt(self.xi_0[i], 0) for i in range(self.config.L0)]
