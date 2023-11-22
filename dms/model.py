@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Callable, List, TypeAlias, Union
+from typing import Callable, List, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -58,7 +58,7 @@ class ModelConfig:
     u: str = "-0.2 * sin(x / 5) - 0.25 * cos(t / 4)"  # control function
 
 
-ArrayOrFloat: TypeAlias = Union[float, npt.ArrayLike]
+ArrayOrFloat = Union[float, npt.ArrayLike]
 
 
 class MonitoredModel:
