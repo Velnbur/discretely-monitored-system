@@ -69,15 +69,7 @@ class MonitoredModel:
         [ArrayOrFloat, ArrayOrFloat, float, float],
         float,
     ]
-<<<<<<< HEAD
     __y_xt: Callable[[float, float], float]
-=======
-<<<<<<< HEAD
-    __y_xt: Callable[[float, float], float]
-=======
-    y_xt: Callable[[float, float], float]
->>>>>>> 06bc119 (Add surface plot for comparison of results)
->>>>>>> feature/y-calc
     __u_xt: Callable[[float, float], float]
 
     __u: Optional[tuple[npt.ArrayLike, npt.ArrayLike]] = None
@@ -101,16 +93,14 @@ class MonitoredModel:
         u = parse_expr(config.u)
 
         self.G = s.lambdify([x, t, x_, t_], g)
-<<<<<<< HEAD
         self.__y_xt = s.lambdify([x, t], y)
-=======
-<<<<<<< HEAD
-        self.__y_xt = s.lambdify([x, t], y)
-=======
-        self.y_xt = s.lambdify([x, t], y)
->>>>>>> 06bc119 (Add surface plot for comparison of results)
->>>>>>> feature/y-calc
         self.__u_xt = s.lambdify([x, t], u)
+
+    def y_xt(self, x: float, t: float) -> float:
+        return self.__y_xt(x, t)
+
+    def u_xt(self, x: float, t: float) -> float:
+        return self.__u_xt(x, t)
 
     @property
     def xi_0(self) -> npt.ArrayLike:
@@ -137,19 +127,7 @@ class MonitoredModel:
         return self.__ti_g
 
     def y(self, x: float, t: float) -> float:
-<<<<<<< HEAD
         return self.y_inf(x, t) + self._y_0(x, t) + self._y_g(x, t)
-=======
-<<<<<<< HEAD
-        return self.y_inf(x, t) + self._y_0(x, t) + self._y_g(x, t)
-=======
-        a = self.y_inf(x, t)
-        b = self._y_0(x, t)
-        c = self._y_g(x, t)
-
-        return a + b + c
->>>>>>> 06bc119 (Add surface plot for comparison of results)
->>>>>>> feature/y-calc
 
     @property
     def y_0(self) -> npt.ArrayLike:
@@ -166,15 +144,7 @@ class MonitoredModel:
 
         return sum(
             [
-<<<<<<< HEAD
-                self.G(x, t, self.__xi_0[i], self.__ti_0[i]) * u_0[i]
-=======
-<<<<<<< HEAD
-                self.G(x, t, self.__xi_0[i], self.__ti_0[i]) * u_0[i]
-=======
                 self.G(x, t, self.config.xi_m0[i], self.config.ti_m0[i]) * u_0[i][0]
->>>>>>> 06bc119 (Add surface plot for comparison of results)
->>>>>>> feature/y-calc
                 for i in range(self.config.M0)
             ]
         )
@@ -186,15 +156,7 @@ class MonitoredModel:
 
         return sum(
             [
-<<<<<<< HEAD
-                self.G(x, t, self.__xi_g[i], self.__ti_g[i]) * u_G[i]
-=======
-<<<<<<< HEAD
-                self.G(x, t, self.__xi_g[i], self.__ti_g[i]) * u_G[i]
-=======
                 self.G(x, t, self.config.xi_mg[i], self.config.ti_mg[i]) * u_G[i][0]
->>>>>>> 06bc119 (Add surface plot for comparison of results)
->>>>>>> feature/y-calc
                 for i in range(self.config.Mg)
             ]
         )
@@ -230,30 +192,12 @@ class MonitoredModel:
         return u_0, u_G
 
     def _get_initial_conditions(self):
-<<<<<<< HEAD
-        Yi_0 = [self.__y_xt(self.__xi_0[i], 0) for i in range(self.config.L0)]
-=======
-<<<<<<< HEAD
-        Yi_0 = [self.__y_xt(self.__xi_0[i], 0) for i in range(self.config.L0)]
-=======
-        Yi_0 = [self.y_xt(self.__xi_0[i], 0) for i in range(self.config.L0)]
->>>>>>> 06bc119 (Add surface plot for comparison of results)
->>>>>>> feature/y-calc
-        return Yi_0
+        return [self.__y_xt(self.__xi_0[i], 0) for i in range(self.config.L0)]
 
     def _get_boundary_conditions(self):
-        Yi_g = [
-<<<<<<< HEAD
+        return [
             self.__y_xt(self.__xi_g[i], self.__ti_g[i]) for i in range(self.config.Lg)
-=======
-<<<<<<< HEAD
-            self.__y_xt(self.__xi_g[i], self.__ti_g[i]) for i in range(self.config.Lg)
-=======
-            self.y_xt(self.__xi_g[i], self.__ti_g[i]) for i in range(self.config.Lg)
->>>>>>> 06bc119 (Add surface plot for comparison of results)
->>>>>>> feature/y-calc
         ]
-        return Yi_g
 
     def y_inf(self, x: npt.ArrayLike, t: npt.ArrayLike) -> float:
         """

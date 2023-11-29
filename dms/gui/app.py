@@ -5,6 +5,7 @@ import tkinter as tk
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
+
 from dms.gui.notebook import CounterNotebook
 from dms.gui.state_widget import StateWidget
 from dms.model import ModelConfig, MonitoredModel
