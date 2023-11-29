@@ -1,6 +1,5 @@
 import tkinter as tk
-
-from dms.model import ModelConfig, MonitoredModel
+from dms.model import ModelConfig
 
 from .consts import DEFAULT_FONT, DEFAULT_FRAME_HEIGHT, DEFAULT_FRAME_WIDTH
 
@@ -42,7 +41,6 @@ class ResultsFrame(tk.Frame):
 
     def __show_results(self):
         print(f"Showing results: {self.config}")
-        model = MonitoredModel(self.config)
 
-        u = model.solve()
-        self.value_label["text"] = f"Значення: {u}"
+        if self.parent is not None:
+            self.parent.forget(self)
