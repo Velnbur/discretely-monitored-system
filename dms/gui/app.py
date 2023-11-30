@@ -73,6 +73,9 @@ class Application(tk.Frame, StateWidget):
 
         x, y = np.meshgrid(x, y)
 
+        both_fig = plt.figure(0)
+        both_axes = both_fig.add_subplot(111, projection="3d")
+
         found_fig = plt.figure(
             1,
         )
@@ -81,6 +84,7 @@ class Application(tk.Frame, StateWidget):
         z = np.array([model.y(x, t) for x, t in zip(x, y)])
 
         axes.plot_surface(x, y, z, label="Початкові точки", cmap=cm.coolwarm)
+        both_axes.plot_surface(x, y, z, label="Початкові точки", cmap=cm.coolwarm)
 
         expected_fig = plt.figure(2)
         axes = expected_fig.add_subplot(111, projection="3d")
@@ -88,5 +92,6 @@ class Application(tk.Frame, StateWidget):
         z = np.array([model.y_xt(x, t) for x, t in zip(x, y)])
 
         axes.plot_surface(x, y, z, label="Крайові точки", cmap=cm.coolwarm)
+        both_axes.plot_surface(x, y, z, label="Початкові точки", cmap=cm.coolwarm)
 
         plt.show()

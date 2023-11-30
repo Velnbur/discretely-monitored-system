@@ -52,9 +52,7 @@ class ModelConfig:
         ]
     )  # boundary time points of the monitored points
 
-    g: str = (
-        "(1 / (-2 * pi)) * log(1 / sqrt((x - x_) ** 2 + (t - t_) ** 2))"  # G(x,t,x_,t_)
-    )
+    g: str = "(1 / (-2 * pi)) * log(1 / sqrt((x) ** 2 + (t) ** 2))"  # G(x,t,x_,t_)
     y: str = "5 * sin(x / 5) + 4 * cos(t / 4)"  # monitored function
     u: str = "-0.2 * sin(x / 5) - 0.25 * cos(t / 4)"  # control function
 
@@ -65,12 +63,12 @@ ArrayOrFloat = Union[float, npt.ArrayLike]
 class MonitoredModel:
     config: ModelConfig
 
-    G: Callable[
-        [ArrayOrFloat, ArrayOrFloat, float, float],
-        float,
+    __G: Callable[
+        [ArrayOrFloat, ArrayOrFloat],
+        ArrayOrFloat,
     ]
-    __y_xt: Callable[[float, float], float]
-    __u_xt: Callable[[float, float], float]
+    __y_xt: Callable[[ArrayOrFloat, ArrayOrFloat], float]
+    __u_xt: Callable[[ArrayOrFloat, ArrayOrFloat], float]
 
     __u: Optional[tuple[npt.ArrayLike, npt.ArrayLike]] = None
 
@@ -86,15 +84,17 @@ class MonitoredModel:
         self.config = config
 
         x, t = s.symbols("x t")
-        x_, t_ = s.symbols("x_ t_")
 
         g = parse_expr(config.g)
         y = parse_expr(config.y)
         u = parse_expr(config.u)
 
-        self.G = s.lambdify([x, t, x_, t_], g)
+        self.__G = s.lambdify([x, t], g)
         self.__y_xt = s.lambdify([x, t], y)
         self.__u_xt = s.lambdify([x, t], u)
+
+    def G(self, x: float, t: float, x_: float, t_: float) -> float:
+        return self.__G(x, t, x_, t_)
 
     def y_xt(self, x: float, t: float) -> float:
         return self.__y_xt(x, t)
@@ -112,39 +112,29 @@ class MonitoredModel:
 
     @property
     def xi_m0(self) -> npt.ArrayLike:
-        return self.__xi_0
+        return self.config.xi_m0
 
     @property
     def ti_m0(self) -> npt.ArrayLike:
-        return self.__ti_0
+        return self.config.ti_m0
 
     @property
     def xi_mg(self) -> npt.ArrayLike:
-        return self.__xi_g
+        return self.config.xi_mg
 
     @property
     def ti_mg(self) -> npt.ArrayLike:
-        return self.__ti_g
+        return self.config.ti_mg
 
     def y(self, x: float, t: float) -> float:
         return self.y_inf(x, t) + self._y_0(x, t) + self._y_g(x, t)
-
-    @property
-    def y_0(self) -> npt.ArrayLike:
-        return np.array([self._y_0(self.__xi_0[i], 0) for i in range(self.config.L0)])
-
-    @property
-    def y_g(self) -> npt.ArrayLike:
-        return np.array(
-            [self._y_g(self.__xi_g[i], self.__ti_g[i]) for i in range(self.config.Lg)]
-        )
 
     def _y_0(self, x: float, t: float) -> float:
         u_0 = self._u_0()
 
         return sum(
             [
-                self.G(x, t, self.config.xi_m0[i], self.config.ti_m0[i]) * u_0[i][0]
+                self.__G(x - self.config.xi_m0[i], t - self.config.ti_m0[i]) * u_0[i][0]
                 for i in range(self.config.M0)
             ]
         )
@@ -156,7 +146,7 @@ class MonitoredModel:
 
         return sum(
             [
-                self.G(x, t, self.config.xi_mg[i], self.config.ti_mg[i]) * u_G[i][0]
+                self.__G(x - self.config.xi_mg[i], t - self.config.ti_mg[i]) * u_G[i][0]
                 for i in range(self.config.Mg)
             ]
         )
@@ -206,10 +196,10 @@ class MonitoredModel:
         :return: Value of the integral:
 
         .. math::
-            \\int_{0}^{T} \\int_{A}^{B} G(x,t,y,z) u(y,z) dy dz
+            \\int_{0}^{T} \\int_{A}^{B} G(x - x',t - t') u(x', t') d x' d t'
         """
 
-        f = lambda x_, t_: self.G(x, t, t_, x_) * self.__u_xt(t_, x_)
+        f = lambda x_, t_: self.__G(x - x_, t - t_) * self.__u_xt(t_, x_)
 
         # TODO(Velnbur): may be, we should use scipy.integrate.dblquad
         # res = scipy.integrate.dblquad(f, 0, self.T, self.A, self.B)[0] instead of this
@@ -261,8 +251,8 @@ class MonitoredModel:
         A_11 = np.array(
             [
                 [
-                    self.G(
-                        self.__xi_0[j], 0, self.config.xi_m0[i], self.config.ti_m0[i]
+                    self.__G(
+                        self.__xi_0[j] - self.config.xi_m0[i], self.config.ti_m0[i]
                     )
                     for i in range(self.config.M0)
                 ]
@@ -272,8 +262,8 @@ class MonitoredModel:
         A_12 = np.array(
             [
                 [
-                    self.G(
-                        self.__xi_0[j], 0, self.config.xi_mg[i], self.config.ti_mg[i]
+                    self.__G(
+                        self.__xi_0[j] - self.config.xi_mg[i], self.config.ti_mg[i]
                     )
                     for i in range(self.config.Mg)
                 ]
@@ -283,11 +273,9 @@ class MonitoredModel:
         A_21 = np.array(
             [
                 [
-                    self.G(
-                        self.__xi_g[j],
-                        self.__ti_g[j],
-                        self.config.xi_m0[i],
-                        self.config.ti_m0[i],
+                    self.__G(
+                        self.__xi_g[j] - self.config.xi_m0[i],
+                        self.__ti_g[j] - self.config.ti_m0[i],
                     )
                     for i in range(self.config.M0)
                 ]
@@ -297,11 +285,9 @@ class MonitoredModel:
         A_22 = np.array(
             [
                 [
-                    self.G(
-                        self.__xi_g[j],
-                        self.__ti_g[j],
-                        self.config.xi_mg[i],
-                        self.config.ti_mg[i],
+                    self.__G(
+                        self.__xi_g[j] - self.config.xi_mg[i],
+                        self.__ti_g[j] - self.config.ti_mg[i],
                     )
                     for i in range(self.config.Mg)
                 ]

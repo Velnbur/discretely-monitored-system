@@ -100,6 +100,7 @@ class MonitorInputPointsFrame(tk.Frame):
 
         def inner():
             points_number = variable.get()
+            lists = ([0.0] * points_number, [0.0] * points_number)
 
             self.__create_column_list(
                 text=f"x:",
@@ -127,7 +128,7 @@ class MonitorInputPointsFrame(tk.Frame):
         rows: int,
         list: List[float],
     ) -> None:
-        for index in range(rows):
+        for index in range(len(list)):
             label = tk.Label(self, text=text, font=DEFAULT_FONT)
             label.grid(row=row_index + index, column=column)
 
@@ -152,7 +153,7 @@ class MonitorInputPointsFrame(tk.Frame):
     ) -> Callable[[], None]:
         """Store point in list"""
 
-        def inner():
+        def inner(*args):
             list[index] = value.get()
 
         return inner
