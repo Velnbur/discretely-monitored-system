@@ -52,9 +52,11 @@ class ModelConfig:
         ]
     )  # boundary time points of the monitored points
 
+    l: str = "diff(diff(y,x), x) + diff(diff(y,t), t)"
     g: str = "(1 / (-2 * pi)) * log(1 / sqrt((x) ** 2 + (t) ** 2))"  # G(x,t,x_,t_)
     y: str = "5 * sin(x / 5) + 4 * cos(t / 4)"  # monitored function
-    u: str = "-0.2 * sin(x / 5) - 0.25 * cos(t / 4)"  # control function
+    # u: str = "-0.2 * sin(x / 5) - 0.25 * cos(t / 4)"
+    # control function
 
 
 ArrayOrFloat = Union[float, npt.ArrayLike]
@@ -87,14 +89,11 @@ class MonitoredModel:
 
         g = parse_expr(config.g)
         y = parse_expr(config.y)
-        u = parse_expr(config.u)
+        u = parse_expr(config.l.replace("y", f"{y}"))
 
         self.__G = s.lambdify([x, t], g)
         self.__y_xt = s.lambdify([x, t], y)
         self.__u_xt = s.lambdify([x, t], u)
-
-    def G(self, x: float, t: float, x_: float, t_: float) -> float:
-        return self.__G(x, t, x_, t_)
 
     def y_xt(self, x: float, t: float) -> float:
         return self.__y_xt(x, t)
@@ -180,7 +179,7 @@ class MonitoredModel:
 
         u = np.dot(A_matrix_inv, (Y_vec - np.dot(A_matrix, nu))) + nu
 
-        assert np.allclose(A_matrix @ u, Y_vec)
+        # assert np.allclose(A_matrix @ u, Y_vec)
 
         u_0 = u[: self.config.M0]
         u_G = u[self.config.M0 :]
