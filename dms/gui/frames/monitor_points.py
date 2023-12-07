@@ -89,25 +89,32 @@ class MonitorInputPointsFrame(tk.Frame):
         ok_button = tk.Button(
             self,
             text="Ok",
-            command=self.__create_points_input_entries_callback(row, var, lists),
+            command=self.__create_points_input_entries_callback(
+                row, var, lists[0], lists[1]
+            ),
         )
         ok_button.grid(row=row + 1, column=column + 2)
 
     def __create_points_input_entries_callback(
-        self, row: int, variable: tk.IntVar, lists: Tuple[List[float], List[float]]
+        self,
+        row: int,
+        variable: tk.IntVar,
+        x_list: List[float],
+        t_list: List[float],
     ) -> Callable[[], None]:
         """Create input entries for points"""
 
         def inner():
             points_number = variable.get()
-            lists = ([0.0] * points_number, [0.0] * points_number)
+            x_list[:] = [0.0] * points_number
+            t_list[:] = [0.0] * points_number
 
             self.__create_column_list(
                 text=f"x:",
                 row_index=row + 3,
                 column=0,
                 rows=points_number,
-                list=lists[0],
+                list=x_list,
             )
 
             self.__create_column_list(
@@ -115,7 +122,7 @@ class MonitorInputPointsFrame(tk.Frame):
                 row_index=row + 3,
                 column=2,
                 rows=points_number,
-                list=lists[1],
+                list=t_list,
             )
 
         return inner
