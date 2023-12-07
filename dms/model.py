@@ -111,6 +111,14 @@ class MonitoredModel:
         return self.__ti_0
 
     @property
+    def xi_g(self) -> npt.ArrayLike:
+        return self.__xi_g
+
+    @property
+    def ti_g(self) -> npt.ArrayLike:
+        return self.__ti_g
+
+    @property
     def xi_m0(self) -> npt.ArrayLike:
         return self.config.xi_m0
 

@@ -68,6 +68,23 @@ class Application(tk.Frame, StateWidget):
     def __plot_results(self):
         model = MonitoredModel(self.config)
 
+        monitored_x_g = model.xi_g
+        monitored_t_g = model.ti_g
+        monitored_y_g = np.array(
+            [model.y_xt(x, t) for x, t in zip(monitored_x_g, monitored_t_g)]
+        )
+        monitored_x_0 = model.xi_0
+        monitored_t_0 = model.ti_0
+        monitored_y_0 = np.array(
+            [model.y_xt(x, t) for x, t in zip(monitored_x_0, monitored_t_0)]
+        )
+        monitored_y_found_0 = np.array(
+            [model.y(x, t) for x, t in zip(monitored_x_0, monitored_t_0)]
+        )
+        monitored_y_found_g = np.array(
+            [model.y(x, t) for x, t in zip(monitored_x_g, monitored_t_g)]
+        )
+
         x = np.linspace(model.config.A, model.config.B, num=100)
         y = np.linspace(0, model.config.T, num=100)
 
@@ -84,6 +101,13 @@ class Application(tk.Frame, StateWidget):
         z = np.array([model.y(x, t) for x, t in zip(x, y)])
 
         axes.plot_surface(x, y, z, label="Початкові точки", cmap=cm.coolwarm)
+        axes.scatter(
+            monitored_x_g, monitored_t_g, monitored_y_found_g, label="Знайдені точки"
+        )
+        axes.scatter(
+            monitored_x_0, monitored_t_0, monitored_y_found_0, label="Знайдені точки"
+        )
+
         both_axes.plot_surface(x, y, z, label="Початкові точки", cmap=cm.coolwarm)
 
         expected_fig = plt.figure(2)
@@ -92,6 +116,19 @@ class Application(tk.Frame, StateWidget):
         z = np.array([model.y_xt(x, t) for x, t in zip(x, y)])
 
         axes.plot_surface(x, y, z, label="Крайові точки", cmap=cm.coolwarm)
+        axes.scatter(
+            monitored_x_g, monitored_t_g, monitored_y_g, label="Знайдені точки"
+        )
+        axes.scatter(
+            monitored_x_0, monitored_t_0, monitored_y_0, label="Знайдені точки"
+        )
+
         both_axes.plot_surface(x, y, z, label="Початкові точки", cmap=cm.coolwarm)
+        both_axes.scatter(
+            monitored_x_g, monitored_t_g, monitored_y_g, label="Знайдені точки"
+        )
+        both_axes.scatter(
+            monitored_x_0, monitored_t_0, monitored_y_0, label="Знайдені точки"
+        )
 
         plt.show()
