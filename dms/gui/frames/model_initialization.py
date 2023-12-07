@@ -29,7 +29,9 @@ class ModelInitializationFrame(tk.Frame):
         tk.Frame.__init__(
             self, parent, width=DEFAULT_FRAME_HEIGHT, height=DEFAULT_FRAME_WIDTH
         )
-
+        label = tk.Label(self, text= 'Визначимо математичну модель процесу через функцію Гріна:', font=DEFAULT_FONT, bg = 'white')
+        label.grid(row=1, column=0, padx=10, pady=10)
+        
         self.parent = parent
         self.config = config_ref
         self.l_operator = tk.StringVar()
@@ -37,13 +39,6 @@ class ModelInitializationFrame(tk.Frame):
         self.y_function = tk.StringVar()
         self.u_function = tk.StringVar()
 
-        self.__add_input_entry(
-            row=1,
-            column=5,
-            text="Оберіть диференціальний оператор L(x): ",
-            var=self.l_operator,
-            choices=self.DEFAULT_L_OPERATOR_CHOICES,
-        )
 
         self.__add_input_entry(
             row=3,
@@ -53,21 +48,20 @@ class ModelInitializationFrame(tk.Frame):
             choices=self.DEFAULT_G_FUNCTION_CHOICES,
         )
 
+        label1 = tk.Label(self, text= 'Введемо функцію стану системи:', font=DEFAULT_FONT, bg = 'white')
+        label1.grid(row= 4 , column = 0, padx=10, pady=10)
+        
         self.__add_input_entry(
             row=5,
             column=5,
-            text="Оберіть функцію стану y(x,t): ",
+            text="Оберіть функцію y(x,t): ",
             var=self.y_function,
             choices=self.DEFAULT_Y_FUNCTION_CHOICES,
         )
 
-        self.__add_input_entry(
-            row=7,
-            column=5,
-            text="Оберіть функцію керування u(x,t): ",
-            var=self.u_function,
-            choices=self.DEFAULT_U_FUNCTION_CHOICES,
-        )
+        label2 = tk.Label(self, text= 'Спостереження за системою та моделюючі функції є дискретними', font=DEFAULT_FONT, bg = 'white')
+        label2.grid(row=8, column=0, columnspan=5, padx=1, pady=10)
+        
 
         save_button = tk.Button(
             self,
@@ -105,9 +99,6 @@ class ModelInitializationFrame(tk.Frame):
 
         if self.y_function.get() != "":
             self.config.y = self.y_function.get()
-
-        if self.u_function.get() != "":
-            self.config.u = self.u_function.get()
 
         if self.g_function.get() != "":
             self.config.g = self.g_function.get()
