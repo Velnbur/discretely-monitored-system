@@ -30,16 +30,23 @@ class SpaceInputFrame(tk.Frame):
         self.space_start = tk.DoubleVar()
         self.space_end = tk.DoubleVar()
 
+        label = tk.Label(self, text= 'Функціонування процесу починається із нуля та є обмеженим.', font=DEFAULT_FONT, bg = 'white')
+        label.grid(row=0, columnspan=2, padx=10, pady=10)
+
+
+        label = tk.Label(self, text= 'Область одновимірна, то пропонується ввести точки, що є її границям.', font=DEFAULT_FONT, bg = 'white')
+        label.grid(row=1, columnspan=2, padx=10, pady=10)
+        
         self.__add_input_entry(
-            row=1,
+            row=2,
             column=10,
-            text="Час закінчення процесу T:",
+            text="Введіть час закінчення процесу T:",
             var=self.time_end,
             choices=self.DEFAULT_TIME_END_CHOICES,
         )
 
         self.__add_input_entry(
-            row=2,
+            row=3,
             column=10,
             text="Початок проміжку x",
             var=self.space_start,
@@ -47,7 +54,7 @@ class SpaceInputFrame(tk.Frame):
         )
 
         self.__add_input_entry(
-            row=3,
+            row=4,
             column=10,
             text="Кінець проміжку x",
             var=self.space_end,
@@ -61,7 +68,7 @@ class SpaceInputFrame(tk.Frame):
             bg="#E1FAE1",
             command=self.__update_config_callback,
         )
-        save_button.grid(row=4, columnspan=20, padx=10, pady=10)
+        save_button.grid(row=5, columnspan=20, padx=10, pady=10)
 
     def __add_input_entry(
         self,

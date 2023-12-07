@@ -36,9 +36,15 @@ class MonitorInputPointsFrame(tk.Frame):
         self.boundary_points_number = tk.IntVar()
         self.selected_boundary_points_x = []
         self.selected_boundary_points_t = []
+        
+        label = tk.Label(self, text= 'Початкові умови визначаються при t = 0 у точках х є S0', font=DEFAULT_FONT, bg = 'white')
+        label.grid(row=0, columnspan=2, padx=10, pady=10)
+        
+        label = tk.Label(self, text= 'Крайові умови визначаються в точках s є Г x [0, T].', font=DEFAULT_FONT, bg = 'white')
+        label.grid(row=1, columnspan=2, padx=10, pady=10)
 
         self.__add_input_entry(
-            row=1,
+            row=2,
             column=1,
             text="Кількість початкових точок:",
             var=self.initial_points_number,
@@ -46,7 +52,7 @@ class MonitorInputPointsFrame(tk.Frame):
         )
 
         self.__add_input_entry(
-            row=10,
+            row=11,
             column=1,
             text="Кількість крайових точок:",
             var=self.boundary_points_number,
@@ -57,9 +63,10 @@ class MonitorInputPointsFrame(tk.Frame):
             self,
             text="Зберегти та перейти далі",
             font=DEFAULT_FONT,
+            bg="#E1FAE1",
             command=self.__store_initial_points,
         )
-        save_button.grid(row=22, column=2)
+        save_button.grid(row=24, column=2)
 
     def __add_input_entry(
         self,
@@ -94,6 +101,7 @@ class MonitorInputPointsFrame(tk.Frame):
             ),
         )
         ok_button.grid(row=row + 1, column=column + 2)
+        
 
     def __create_points_input_entries_callback(
         self,
